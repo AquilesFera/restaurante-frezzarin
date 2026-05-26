@@ -10,11 +10,16 @@ import marmitaSemLactose from "@/assets/menu/marmita-sem-lactose-CteKkHLP.jpg";
 import marmitaVegana from "@/assets/menu/marmita-vegana-AlxtTSl8.jpg";
 import sucoDetox from "@/assets/menu/suco-detox-DuaxB8zW.jpg";
 import vitaminaFrutas from "@/assets/menu/vitamina-frutas-Dtyov-Ui.jpg";
+import sucoVerde from "@/assets/menu/suco-verde.jpg";
+import limonadaGengibre from "@/assets/menu/limonada-gengibre.jpg";
+import sucoMaracuja from "@/assets/menu/suco-maracuja.jpg";
+import sucoAbacaxiHortela from "@/assets/menu/suco-abacaxi-hortela.jpg";
 
 export type Categoria = "Fit por Quilo" | "Marmitas" | "Congelados" | "Bebidas";
 export type Tag = "Vegano" | "Fit" | "Low Carb" | "Sem Glúten" | "Sem Lactose" | "Natural";
 export type Proteina = "frango" | "peixe" | "carne" | "vegetariano" | "vegano" | "nenhuma";
 export type Porte = "leve" | "media" | "reforcada";
+export type Refeicao = "almoco" | "cafe" | "jantar";
 
 export interface Prato {
   id: string;
@@ -34,6 +39,7 @@ export interface Prato {
   semGluten: boolean;
   semLactose: boolean;
   lowCarb: boolean;
+  refeicao: Refeicao[];
 }
 
 export const menu: Prato[] = [
@@ -41,7 +47,7 @@ export const menu: Prato[] = [
     id: "salada-mediterranea",
     nome: "Salada Mediterrânea",
     descricao: "Folhas verdes, tomate cereja, pepino, azeitona e molho de limão.",
-    preco: "R$ 28/kg",
+    preco: "R$ 28,00",
     imagem: saladaMediterranea,
     categoria: "Fit por Quilo",
     tags: ["Vegano", "Sem Glúten", "Sem Lactose"],
@@ -49,12 +55,13 @@ export const menu: Prato[] = [
     calorias: 180, proteina_g: 4, carbo_g: 12, gordura_g: 13,
     proteina: "vegano", porte: "leve",
     semGluten: true, semLactose: true, lowCarb: true,
+    refeicao: ["almoco", "jantar"],
   },
   {
     id: "frango-grelhado",
     nome: "Frango Grelhado",
     descricao: "Peito de frango grelhado, temperado com ervas finas e alho.",
-    preco: "R$ 38/kg",
+    preco: "R$ 38,00",
     imagem: frangoGrelhado,
     categoria: "Fit por Quilo",
     tags: ["Fit", "Sem Glúten", "Sem Lactose", "Low Carb"],
@@ -62,12 +69,13 @@ export const menu: Prato[] = [
     calorias: 230, proteina_g: 38, carbo_g: 2, gordura_g: 8,
     proteina: "frango", porte: "media",
     semGluten: true, semLactose: true, lowCarb: true,
+    refeicao: ["almoco", "jantar"],
   },
   {
     id: "tilapia",
     nome: "Filé de Tilápia",
     descricao: "Tilápia assada com limão siciliano e azeite extravirgem.",
-    preco: "R$ 42/kg",
+    preco: "R$ 42,00",
     imagem: tilapia,
     categoria: "Fit por Quilo",
     tags: ["Low Carb", "Sem Glúten", "Sem Lactose"],
@@ -75,12 +83,13 @@ export const menu: Prato[] = [
     calorias: 195, proteina_g: 32, carbo_g: 1, gordura_g: 7,
     proteina: "peixe", porte: "media",
     semGluten: true, semLactose: true, lowCarb: true,
+    refeicao: ["almoco", "jantar"],
   },
   {
     id: "legumes-vapor",
     nome: "Legumes no Vapor",
     descricao: "Mix de brócolis, cenoura, abobrinha e couve-flor no vapor.",
-    preco: "R$ 22/kg",
+    preco: "R$ 22,00",
     imagem: legumesVapor,
     categoria: "Fit por Quilo",
     tags: ["Vegano", "Sem Glúten", "Sem Lactose", "Low Carb"],
@@ -88,6 +97,7 @@ export const menu: Prato[] = [
     calorias: 95, proteina_g: 4, carbo_g: 14, gordura_g: 3,
     proteina: "vegano", porte: "leve",
     semGluten: true, semLactose: true, lowCarb: true,
+    refeicao: ["almoco", "jantar"],
   },
   {
     id: "marmita-p",
@@ -101,6 +111,7 @@ export const menu: Prato[] = [
     calorias: 420, proteina_g: 32, carbo_g: 48, gordura_g: 10,
     proteina: "frango", porte: "media",
     semGluten: true, semLactose: true, lowCarb: false,
+    refeicao: ["almoco", "jantar"],
   },
   {
     id: "marmita-g",
@@ -114,6 +125,7 @@ export const menu: Prato[] = [
     calorias: 680, proteina_g: 52, carbo_g: 72, gordura_g: 16,
     proteina: "carne", porte: "reforcada",
     semGluten: true, semLactose: true, lowCarb: false,
+    refeicao: ["almoco", "jantar"],
   },
   {
     id: "wrap-integral",
@@ -127,6 +139,7 @@ export const menu: Prato[] = [
     calorias: 340, proteina_g: 24, carbo_g: 32, gordura_g: 12,
     proteina: "frango", porte: "leve",
     semGluten: false, semLactose: false, lowCarb: true,
+    refeicao: ["cafe", "almoco"],
   },
   {
     id: "marmita-sem-gluten",
@@ -140,6 +153,7 @@ export const menu: Prato[] = [
     calorias: 510, proteina_g: 38, carbo_g: 58, gordura_g: 12,
     proteina: "frango", porte: "media",
     semGluten: true, semLactose: false, lowCarb: false,
+    refeicao: ["almoco", "jantar"],
   },
   {
     id: "marmita-sem-lactose",
@@ -153,6 +167,7 @@ export const menu: Prato[] = [
     calorias: 430, proteina_g: 36, carbo_g: 42, gordura_g: 9,
     proteina: "frango", porte: "media",
     semGluten: true, semLactose: true, lowCarb: false,
+    refeicao: ["almoco", "jantar"],
   },
   {
     id: "marmita-vegana",
@@ -166,6 +181,7 @@ export const menu: Prato[] = [
     calorias: 460, proteina_g: 18, carbo_g: 62, gordura_g: 14,
     proteina: "vegano", porte: "media",
     semGluten: true, semLactose: true, lowCarb: false,
+    refeicao: ["almoco", "jantar"],
   },
   {
     id: "suco-detox",
@@ -179,6 +195,7 @@ export const menu: Prato[] = [
     calorias: 85, proteina_g: 2, carbo_g: 19, gordura_g: 0,
     proteina: "nenhuma", porte: "leve",
     semGluten: true, semLactose: true, lowCarb: false,
+    refeicao: ["cafe", "almoco", "jantar"],
   },
   {
     id: "vitamina-frutas",
@@ -192,7 +209,70 @@ export const menu: Prato[] = [
     calorias: 220, proteina_g: 8, carbo_g: 42, gordura_g: 3,
     proteina: "nenhuma", porte: "leve",
     semGluten: false, semLactose: false, lowCarb: false,
+    refeicao: ["cafe"],
+  },
+  {
+    id: "suco-verde",
+    nome: "Suco Verde Premium",
+    descricao: "Couve, espinafre, maçã verde, limão e gengibre. 350ml.",
+    preco: "R$ 12,90",
+    imagem: sucoVerde,
+    categoria: "Bebidas",
+    tags: ["Natural", "Vegano", "Sem Glúten", "Sem Lactose"],
+    ingredientes: ["Couve", "Espinafre", "Maçã verde", "Limão", "Gengibre", "Água de coco"],
+    calorias: 90, proteina_g: 2, carbo_g: 20, gordura_g: 0,
+    proteina: "nenhuma", porte: "leve",
+    semGluten: true, semLactose: true, lowCarb: false,
+    refeicao: ["cafe", "almoco"],
+  },
+  {
+    id: "limonada-gengibre",
+    nome: "Limonada de Gengibre",
+    descricao: "Limão siciliano, gengibre fresco, hortelã e gelo. 400ml.",
+    preco: "R$ 10,90",
+    imagem: limonadaGengibre,
+    categoria: "Bebidas",
+    tags: ["Natural", "Vegano", "Sem Glúten", "Sem Lactose", "Low Carb"],
+    ingredientes: ["Limão siciliano", "Gengibre", "Hortelã", "Adoçante natural", "Gelo"],
+    calorias: 45, proteina_g: 0, carbo_g: 11, gordura_g: 0,
+    proteina: "nenhuma", porte: "leve",
+    semGluten: true, semLactose: true, lowCarb: true,
+    refeicao: ["cafe", "almoco", "jantar"],
+  },
+  {
+    id: "suco-maracuja",
+    nome: "Suco de Maracujá com Hortelã",
+    descricao: "Maracujá fresco batido na hora com hortelã. 350ml.",
+    preco: "R$ 11,90",
+    imagem: sucoMaracuja,
+    categoria: "Bebidas",
+    tags: ["Natural", "Vegano", "Sem Glúten", "Sem Lactose"],
+    ingredientes: ["Polpa de maracujá", "Hortelã", "Água gelada", "Adoçante natural"],
+    calorias: 110, proteina_g: 2, carbo_g: 26, gordura_g: 0,
+    proteina: "nenhuma", porte: "leve",
+    semGluten: true, semLactose: true, lowCarb: false,
+    refeicao: ["cafe", "almoco", "jantar"],
+  },
+  {
+    id: "suco-abacaxi-hortela",
+    nome: "Suco de Abacaxi com Hortelã",
+    descricao: "Abacaxi natural batido com hortelã fresca. 400ml.",
+    preco: "R$ 11,90",
+    imagem: sucoAbacaxiHortela,
+    categoria: "Bebidas",
+    tags: ["Natural", "Vegano", "Sem Glúten", "Sem Lactose"],
+    ingredientes: ["Abacaxi", "Hortelã", "Água gelada", "Gelo"],
+    calorias: 120, proteina_g: 1, carbo_g: 29, gordura_g: 0,
+    proteina: "nenhuma", porte: "leve",
+    semGluten: true, semLactose: true, lowCarb: false,
+    refeicao: ["cafe", "almoco", "jantar"],
   },
 ];
 
 export const categorias: ("Todos" | Categoria)[] = ["Todos", "Fit por Quilo", "Marmitas", "Congelados", "Bebidas"];
+
+export const refeicoes: { id: Refeicao; label: string; emoji: string; horario: string }[] = [
+  { id: "almoco", label: "Almoço",          emoji: "🍽️", horario: "10:30 – 14:00" },
+  { id: "cafe",   label: "Café da Tarde",   emoji: "🍵", horario: "14:00 – 18:00" },
+  { id: "jantar", label: "Jantar",          emoji: "🌙", horario: "18:00 – 23:00" },
+];

@@ -11,6 +11,7 @@ import appCss from "../styles.css?url";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { Toaster } from "@/components/ui/sonner";
+import { RestaurantStatusBanner } from "@/components/site/RestaurantStatusBanner";
 
 function NotFoundComponent() {
   return (
@@ -102,7 +103,10 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       <div className="min-h-screen flex flex-col">
         <Header />
-        <main className="flex-1 pt-16">
+        <div className="pt-16">
+          <RestaurantStatusBanner />
+        </div>
+        <main className="flex-1">
           <Outlet />
         </main>
         <Footer />

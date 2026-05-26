@@ -3,6 +3,8 @@ import { motion } from "framer-motion";
 import { ArrowRight, ChevronDown, Check } from "lucide-react";
 import { SectionEyebrow, Ornament } from "@/components/site/SectionEyebrow";
 import { menu } from "@/data/menu";
+import { OfertasRelampago } from "@/components/site/OfertasRelampago";
+import { PratoDoDiaCard } from "@/components/site/PratoDoDiaCard";
 import interior from "@/assets/interior-ByLBiY_l.jpg";
 
 export const Route = createFileRoute("/")({
@@ -76,6 +78,9 @@ function Index() {
         </div>
       </section>
 
+      {/* OFERTAS RELÂMPAGO */}
+      <OfertasRelampago />
+
       {/* PROPOSTA */}
       <section className="py-24 md:py-32 bg-brand-cream">
         <div className="mx-auto max-w-6xl px-6 grid md:grid-cols-2 gap-14 items-center">
@@ -95,6 +100,19 @@ function Index() {
               </div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* PRATO DO DIA EM DESTAQUE */}
+      <section className="py-16 bg-brand-cream">
+        <div className="mx-auto max-w-5xl px-6">
+          <div className="text-center mb-8">
+            <SectionEyebrow>Destaque de hoje</SectionEyebrow>
+            <h2 className="font-serif text-4xl md:text-5xl text-brand-green-deep">
+              Prato do <span className="italic-gold">Dia</span>
+            </h2>
+          </div>
+          <PratoDoDiaCard />
         </div>
       </section>
 

@@ -1,15 +1,12 @@
-import { createFileRoute, useRouter } from "@tanstack/react-router";
-import { useServerFn } from "@tanstack/react-start";
-import { useMutation, useQuery, useQueryClient, queryOptions } from "@tanstack/react-query";
-import { useState } from "react";
+import { createFileRoute } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Star, MessageSquareQuote } from "lucide-react";
 import { toast } from "sonner";
-import { listFeedbacks, submitFeedback } from "@/lib/feedback.functions";
+import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/feedback")({
   component: FeedbackPage,
-  loader: ({ context }) => context.queryClient.ensureQueryData(feedbacksQuery),
   head: () => ({
     meta: [
       { title: "Avaliações — Restaurante Frezzarin" },
@@ -22,43 +19,66 @@ export const Route = createFileRoute("/feedback")({
   }),
 });
 
-const feedbacksQuery = queryOptions({
-  queryKey: ["feedbacks"],
-  queryFn: () => listFeedbacks(),
-});
+interface FeedbackRow {
+  id: string;
+  nome: string;
+  comentario: string;
+  nota: number | null;
+  created_at: string;
+}
 
 function FeedbackPage() {
-  const router = useRouter();
-  const qc = useQueryClient();
-  const list = useServerFn(listFeedbacks);
-  const submit = useServerFn(submitFeedback);
-
-  const { data } = useQuery({ ...feedbacksQuery, queryFn: () => list() });
-  const items = data?.items ?? [];
-
+  const [items, setItems] = useState<FeedbackRow[]>([]);
+  const [loading, setLoading] = useState(true);
   const [nome, setNome] = useState("");
   const [comentario, setComentario] = useState("");
   const [nota, setNota] = useState<number | null>(null);
+  const [sending, setSending] = useState(false);
 
-  const mut = useMutation({
-    mutationFn: (input: { nome: string; comentario: string; nota: number | null }) =>
-      submit({ data: input }),
-    onSuccess: () => {
-      toast.success("Obrigado pelo seu feedback!");
-      setNome(""); setComentario(""); setNota(null);
-      qc.invalidateQueries({ queryKey: ["feedbacks"] });
-      router.invalidate();
-    },
-    onError: () => toast.error("Não foi possível enviar. Tente novamente."),
-  });
+  async function carregar() {
+    try {
+      const { data, error } = await supabase
+        .from("feedbacks")
+        .select("id, nome, comentario, nota, created_at")
+        .order("created_at", { ascending: false })
+        .limit(200);
+      if (error) throw error;
+      setItems((data ?? []) as FeedbackRow[]);
+    } catch (err) {
+      console.error("[feedback] load", err);
+    } finally {
+      setLoading(false);
+    }
+  }
 
-  function handleSubmit(e: React.FormEvent) {
+  useEffect(() => {
+    carregar();
+  }, []);
+
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    const n = nome.trim(); const c = comentario.trim();
+    const n = nome.trim();
+    const c = comentario.trim();
     if (!n) return toast.error("Informe seu nome.");
     if (!c) return toast.error("Escreva um comentário.");
-    if (n.length > 80 || c.length > 500) return toast.error("Texto muito longo.");
-    mut.mutate({ nome: n, comentario: c, nota });
+    if (n.length > 80) return toast.error("Nome muito longo (máx. 80).");
+    if (c.length > 500) return toast.error("Comentário muito longo (máx. 500).");
+
+    setSending(true);
+    try {
+      const { error } = await supabase
+        .from("feedbacks")
+        .insert({ nome: n, comentario: c, nota });
+      if (error) throw error;
+      toast.success("Obrigado pelo seu feedback!");
+      setNome(""); setComentario(""); setNota(null);
+      await carregar();
+    } catch (err) {
+      console.error("[feedback] submit", err);
+      toast.error("Não foi possível enviar. Tente novamente.");
+    } finally {
+      setSending(false);
+    }
   }
 
   return (
@@ -73,7 +93,6 @@ function FeedbackPage() {
 
       <section className="py-20 bg-brand-cream">
         <div className="mx-auto max-w-5xl px-6 grid lg:grid-cols-[1fr_1.3fr] gap-12">
-          {/* FORM */}
           <form onSubmit={handleSubmit} className="bg-white rounded-2xl p-7 md:p-8 border border-border h-fit lg:sticky lg:top-24 shadow-sm">
             <h2 className="font-serif text-2xl text-brand-green-deep">Deixe seu feedback</h2>
             <p className="text-sm text-muted-foreground mt-1">Sua opinião nos ajuda a melhorar cada dia.</p>
@@ -100,19 +119,20 @@ function FeedbackPage() {
               <div className="text-right text-xs text-muted-foreground mt-1">{comentario.length}/500</div>
             </div>
 
-            <button type="submit" disabled={mut.isPending} className="mt-5 w-full py-3.5 rounded-full bg-brand-gold text-brand-green-deep text-sm font-semibold tracking-[0.2em] uppercase hover:bg-brand-gold-soft transition-colors disabled:opacity-60">
-              {mut.isPending ? "Enviando..." : "Enviar Avaliação"}
+            <button type="submit" disabled={sending} className="mt-5 w-full py-3.5 rounded-full bg-brand-gold text-brand-green-deep text-sm font-semibold tracking-[0.2em] uppercase hover:bg-brand-gold-soft transition-colors disabled:opacity-60">
+              {sending ? "Enviando..." : "Enviar Avaliação"}
             </button>
           </form>
 
-          {/* LISTA */}
           <div>
             <div className="flex items-center justify-between mb-6">
-              <h2 className="font-serif text-2xl text-brand-green-deep">{items.length} depoimento{items.length === 1 ? "" : "s"}</h2>
+              <h2 className="font-serif text-2xl text-brand-green-deep">
+                {loading ? "Carregando..." : `${items.length} depoimento${items.length === 1 ? "" : "s"}`}
+              </h2>
               <MessageSquareQuote className="h-5 w-5 text-brand-gold" />
             </div>
 
-            {items.length === 0 ? (
+            {!loading && items.length === 0 ? (
               <div className="bg-white rounded-2xl p-10 border border-dashed border-border text-center text-muted-foreground">
                 Ainda não há avaliações. Seja o primeiro a comentar!
               </div>

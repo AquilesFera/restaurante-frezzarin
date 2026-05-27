@@ -126,7 +126,7 @@ export function CartDrawer() {
             <a
               href={
                 aberto
-                  ? `https://wa.me/5519000000000?text=${wppMessage}`
+                  ? `https://wa.me/5519999587638?text=${wppMessage}`
                   : undefined
               }
               target="_blank"

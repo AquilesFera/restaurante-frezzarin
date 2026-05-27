@@ -39,11 +39,11 @@ export function Footer() {
           <h4 className="text-xs uppercase tracking-[0.2em] text-brand-gold mb-4">Pedidos</h4>
           <p className="text-sm mb-4 text-brand-cream/70">Entrega via iFood · Rappi · Uber Eats</p>
           <a
-            href="https://wa.me/5519000000000"
+            href="https://wa.me/5519999587638?text=Olá!%20Gostaria%20de%20fazer%20um%20pedido%20no%20Frezzarin."
             target="_blank" rel="noreferrer"
-            className="inline-flex items-center px-4 py-2 rounded-full bg-brand-gold text-brand-green-deep text-xs font-semibold tracking-wider uppercase hover:bg-brand-gold-soft transition-colors"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand-gold text-brand-green-deep text-xs font-semibold tracking-wider uppercase hover:bg-brand-gold-soft transition-colors"
           >
-            Pedir no WhatsApp
+            WhatsApp (19) 99958-7638
           </a>
           <a href="#" aria-label="Instagram" className="mt-5 inline-flex items-center gap-2 text-sm hover:text-brand-gold">
             <Instagram className="h-4 w-4" /> @restaurantefrezzarin

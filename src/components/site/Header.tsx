@@ -42,7 +42,7 @@ export function Header() {
         <div className="flex items-center gap-3">
           <CartDrawer />
           <a
-            href={aberto ? "https://wa.me/5519000000000?text=Olá!%20Gostaria%20de%20fazer%20um%20pedido%20no%20Frezzarin." : undefined}
+            href={aberto ? "https://wa.me/5519999587638?text=Olá!%20Gostaria%20de%20fazer%20um%20pedido%20no%20Frezzarin." : undefined}
             target="_blank" rel="noreferrer"
             aria-disabled={!aberto}
             onClick={(e) => { if (!aberto) e.preventDefault(); }}

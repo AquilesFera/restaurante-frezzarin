@@ -76,7 +76,7 @@ export function NutritionalModal({ prato, onClose }: Props) {
               </div>
 
               <a
-                href={`https://wa.me/5519000000000?text=Olá!%20Quero%20pedir%20${encodeURIComponent(prato.nome)}.`}
+                href={`https://wa.me/5519999587638?text=Olá!%20Quero%20pedir%20${encodeURIComponent(prato.nome)}.`}
                 target="_blank" rel="noreferrer"
                 className="block text-center w-full px-6 py-3.5 rounded-full bg-brand-gold text-brand-green-deep text-sm font-semibold tracking-[0.18em] uppercase hover:bg-brand-gold-soft transition-colors"
               >

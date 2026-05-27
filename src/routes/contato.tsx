@@ -40,7 +40,7 @@ function ContatoPage() {
       setSending(false);
       return;
     }
-    const wa = `https://wa.me/5519000000000?text=${encodeURIComponent(`Olá! Sou ${nome}. Assunto: ${assunto}. ${msg}`)}`;
+    const wa = `https://wa.me/5519999587638?text=${encodeURIComponent(`Olá! Sou ${nome}. Assunto: ${assunto}. ${msg}`)}`;
     window.open(wa, "_blank");
     toast.success("Mensagem aberta no WhatsApp!");
     (e.target as HTMLFormElement).reset();

@@ -46,13 +46,13 @@ export function Header() {
             target="_blank" rel="noreferrer"
             aria-disabled={!aberto}
             onClick={(e) => { if (!aberto) e.preventDefault(); }}
-            className={`hidden md:inline-flex items-center px-4 py-2 rounded-full text-xs font-semibold tracking-wider uppercase transition-colors ${
+            className={`hidden md:inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold tracking-wider uppercase transition-colors ${
               aberto
                 ? "bg-brand-gold text-brand-green-deep hover:bg-brand-gold-soft"
                 : "bg-white/10 text-brand-cream/40 cursor-not-allowed"
             }`}
           >
-            {aberto ? "Pedir no WhatsApp" : "Fechado"}
+            {aberto ? "WhatsApp (19) 99958-7638" : "Fechado"}
           </a>
 
           <button

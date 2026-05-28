@@ -14,6 +14,14 @@ import sucoVerde from "@/assets/menu/suco-verde.jpg";
 import limonadaGengibre from "@/assets/menu/limonada-gengibre.jpg";
 import sucoMaracuja from "@/assets/menu/suco-maracuja.jpg";
 import sucoAbacaxiHortela from "@/assets/menu/suco-abacaxi-hortela.jpg";
+// Imagens novas geradas (substituem URLs externas)
+import patinhoGrelhado from "@/assets/menu/patinho-grelhado.jpg";
+import feijaoPreto from "@/assets/menu/feijao-preto.jpg";
+import panquecaFrango from "@/assets/menu/panqueca-frango.jpg";
+import escondidinho from "@/assets/menu/escondidinho.jpg";
+import sucoMelancia from "@/assets/menu/suco-melancia.jpg";
+import sucoAcerola from "@/assets/menu/suco-acerola.jpg";
+import aguaCoco from "@/assets/menu/agua-coco.jpg";
 
 export type Categoria = "Fit por Quilo" | "Marmitas" | "Congelados" | "Bebidas";
 export type Tag = "Vegano" | "Fit" | "Low Carb" | "Sem Glúten" | "Sem Lactose" | "Natural";
@@ -40,6 +48,8 @@ export interface Prato {
   semLactose: boolean;
   lowCarb: boolean;
   refeicao: Refeicao[];
+  maisPedido?: boolean;
+  novo?: boolean;
 }
 
 export const menu: Prato[] = [

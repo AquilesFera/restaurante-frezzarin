@@ -1,88 +1,119 @@
-## Resumo do que será feito
 
-Vou substituir o conteúdo atual do projeto Lovable pelo conteúdo do zip enviado (`tasty-taste-guide-main`), depois aplicar duas camadas de mudança: **(A) compatibilidade Vercel** e **(B) novas regras de negócio e cardápio**.
+# Plano de Profissionalização do Restaurante Frezzarin
 
----
+Foco: experiência visual premium + Supabase realtime + ofertas relâmpago profissionais. Mantém a identidade (verde profundo + dourado + creme + serif itálica).
 
-## A. Estrutura e deploy no Vercel
+## 1. Supabase — Feedback em Tempo Real
 
-O projeto é uma aplicação **TanStack Start (SSR React)**, não HTML/CSS/JS puro. No Vercel ele roda como uma aplicação Node/Edge — não como arquivos estáticos. O Vercel detecta isso automaticamente via `package.json` + `vite.config.ts`. Não existe (e não deve existir) `index.html` na raiz nem pastas `/css` e `/js` soltas — isso é convenção de sites estáticos e quebraria o roteamento, SSR e o bundling de assets do Vite.
+- Garantir que a tabela `feedbacks` (já existente) tem Realtime habilitado via migration (`alter publication supabase_realtime add table public.feedbacks` + `replica identity full`).
+- Refatorar `src/routes/feedback.tsx`:
+  - Subscrição via `supabase.channel('feedbacks').on('postgres_changes', { event: 'INSERT' })` para inserir novos comentários no topo da lista sem reload.
+  - Animação `framer-motion` `AnimatePresence` com entrada suave (fade + slide) para novos itens.
+  - Skeleton loading enquanto carrega.
+  - Validação com `zod` (nome ≤80, comentário ≤500, nota 1–5).
+- Criar componente reutilizável `FeedbackCard` + `FeedbackForm`.
+- Adicionar uma **seção compacta de avaliações** na home (`/`) puxando os 3 mais recentes (também com realtime, opcional).
 
-Mudanças concretas:
+## 2. Novas Imagens do Cardápio (geradas via imagegen, qualidade premium/standard)
 
-1. **Remover o target Cloudflare Workers** (causa do "não identifica arquivos" no Vercel):
-   - Deletar `wrangler.jsonc`.
-   - Remover `@cloudflare/vite-plugin` do `package.json`.
-   - Trocar `src/server.ts` (entry do Worker) por um entry compatível com o adapter Node/Vercel do TanStack Start.
-   - Ajustar `vite.config.ts` para não passar `tanstackStart.server.entry` apontando para o wrapper Cloudflare.
-2. **Adicionar `vercel.json`** com:
-   - `framework: "vite"`,
-   - rewrite catch-all `"/(.*)" -> "/"` como fallback de SPA para garantir que refresh em `/cardapio`, `/sobre`, etc. nunca dê 404 (cinto + suspensório junto com o SSR do TanStack).
-3. **Variáveis de ambiente no Vercel** (Project Settings → Environment Variables), iguais às que o Lovable Cloud já injeta:
-   - `VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY`, `VITE_SUPABASE_PROJECT_ID` (client),
-   - `SUPABASE_URL`, `SUPABASE_PUBLISHABLE_KEY`, `SUPABASE_SERVICE_ROLE_KEY` (server).
-4. **Assets**: continuam em `src/assets/**` importados como ES modules — o Vite faz o hashing/bundle. Não mover para `/public` solto (quebra os imports existentes do menu).
-5. **Estrutura final** (já é a correta para Vercel + TanStack):
-   ```text
-   src/
-     routes/        ← roteamento file-based (index, cardapio, sobre, contato, feedback)
-     components/    ← UI + site
-     data/          ← menu.ts e novos arquivos (horario, ofertas, prato-do-dia)
-     assets/menu/   ← imagens importadas
-     integrations/supabase/   ← cliente Supabase
-   vercel.json
-   package.json
-   vite.config.ts
-   ```
+Substituir/gerar em `src/assets/menu/` (sobrescrevendo caminhos atuais):
 
-> **Importante**: a Lovable também publica esse mesmo projeto sem nenhum ajuste pelo botão Publish. O Vercel é opcional. Vou deixar tudo funcionando nos dois.
+- Patinho Grelhado
+- Feijão Preto Caseiro
+- Panqueca de Frango
+- Escondidinho de Batata Doce
+- Suco de Melancia com Limão
+- Suco de Acerola
+- Água de Coco Natural
 
-## B. Banco de dados (Supabase)
+Estilo: foto realista de restaurante, luz natural lateral, fundo madeira escura/linho, prato cerâmica, vapor sutil quando aplicável. Atualizar `src/data/menu.ts` para apontar para os novos arquivos importados como ES modules.
 
-Mantenho a integração existente (`src/integrations/supabase/`) e a migração em `supabase/migrations/`. No Vercel basta colar as env vars acima — os dados persistidos no projeto Supabase atual continuam acessíveis.
+## 3. Ofertas Relâmpago Premium
 
-## C. Horário de funcionamento (10:30–23:00, America/Sao_Paulo)
+Reescrever `src/components/site/OfertasRelampago.tsx`:
 
-- Novo hook `src/hooks/use-restaurant-status.ts` que calcula o horário **sempre em America/Sao_Paulo** via `Intl.DateTimeFormat` (independente do fuso do navegador) e atualiza a cada 30s.
-- Retorna `{ aberto, proximaAbertura, minutosParaFechar }`.
-- Novo componente `RestaurantStatusBanner` fixo no topo: verde "Aberto agora" ou vermelho "Fechado — abrimos às 10:30".
-- Botões de "Adicionar ao pedido" e "Finalizar pedido" ficam **disabled** + tooltip quando fechado.
+- Cards grandes (grid 1–2 colunas), imagem do prato em destaque (aspect 16/10).
+- Tag animada "PROMO" pulsando (gold sobre verde, micro-animação `framer-motion`).
+- **Preço antigo riscado** + **novo preço** grande dourado.
+- **Contador regressivo em tempo real** (HH:MM:SS) até o fim do turno, atualizando a cada 1s.
+- Botão "Pedir no WhatsApp" com mensagem pré-preenchida.
+- Atualizar `src/data/ofertas.ts` para incluir `precoAntigo`, `precoNovo`, `imagem` (referência ao prato), `desconto`.
+- Marcar pratos em oferta no `/cardapio` com badge dourada "EM OFERTA" + preço riscado.
 
-## D. Ofertas relâmpago dinâmicas (fixas por turno)
+## 4. Sistema de Badges no Cardápio
 
-- Novo arquivo `src/data/ofertas.ts` com 3 buckets:
-  - **Manhã** (10:30–14:00): ex. Suco Detox 20% off,
-  - **Tarde** (14:00–18:00): ex. Vitamina + Wrap combo,
-  - **Noite** (18:00–23:00): ex. Marmita G com 15% off.
-- Componente `OfertasRelampago` na home escolhe o bucket baseado na hora SP atual e mostra contagem regressiva até o fim do turno.
+Adicionar campos opcionais ao tipo `Prato` em `src/data/menu.ts`:
+- `maisPedido?: boolean` → badge "Mais Pedido" (verde escuro)
+- `novo?: boolean` → badge "Novo" (dourado)
+- `emOferta?: boolean` (derivado das ofertas ativas) → badge "Promoção" (vermelho-terra elegante)
 
-## E. Abas do cardápio: Almoço / Café da Tarde / Jantar
+Renderizar badges nos cards do cardápio e na home.
 
-- Adicionar campo `refeicao: ("almoco" | "cafe" | "jantar")[]` em cada `Prato` (`src/data/menu.ts`). Itens existentes ganham a classificação (ex.: marmitas → almoço e jantar, sucos/vitaminas → café da tarde, etc).
-- Refatorar `src/routes/cardapio.tsx` usando `<Tabs>` do shadcn (já instalado) com as 3 abas + animação `framer-motion` (já instalado). Mantém o filtro de categoria existente como sub-filtro dentro de cada aba.
-- **Prato do Dia**: novo `src/data/prato-do-dia.ts` com mapa fixo por dia da semana (0–6), por exemplo `{ 3: "tilapia" }` (quarta = Tilápia). Card destacado no topo da aba ativa.
+Nova seção **"Pratos Mais Vendidos"** na home: grid horizontal scroll com os pratos marcados `maisPedido`.
 
-## F. Novos sucos + carrinho
+## 5. Animações & Micro-interações
 
-- Adicionar 4 sucos novos ao `menu.ts`: Suco Verde, Limonada de Gengibre, Suco de Maracujá com Hortelã, Suco de Abacaxi com Hortelã. Imagens geradas via `imagegen` (qualidade `standard`), salvas em `src/assets/menu/` e importadas como ES modules — garante caminho válido em dev, build e Vercel.
-- Verificar/implementar carrinho:
-  - Store leve com `zustand` (`src/stores/cart.ts`) persistido em `localStorage`.
-  - Botão "Adicionar ao pedido" em cada card do cardápio (desabilitado quando fechado).
-  - Drawer de carrinho no `Header` com contador, lista, totais e botão "Enviar pedido pelo WhatsApp" (link `https://wa.me/...` com mensagem montada).
+- Hook `useInView` (framer-motion) para fade-in/slide-up ao rolar em todas as seções.
+- Hover nos cards: lift sutil + sombra dourada + zoom da imagem.
+- Botões: ripple/scale ao clicar.
+- Skeleton (`src/components/ui/skeleton.tsx`) em todas imagens com `onLoad`.
+- Parallax leve no hero (translateY via scroll).
+- Transições de rota suaves via `AnimatePresence` no `__root.tsx`.
 
----
+## 6. Componentes Premium Novos
 
-## Detalhes técnicos
+- **`WhatsAppFloatingButton`**: botão flutuante fixo bottom-right com pulse animado, link `wa.me/5519999587638`.
+- **`LoadingScreen`**: splash inicial elegante (logo + ornament dourado, fade-out após mount).
+- **`Navbar` (refatorar Header)**: backdrop-blur, transparente no topo / sólido ao scroll, indicador animado no link ativo, mobile drawer estilizado.
 
-- **Stack**: TanStack Start 1.x + React 19 + Vite 7 + Tailwind v4 + shadcn + Supabase + framer-motion (todos já no `package.json`).
-- **Roteamento**: file-based em `src/routes/`; `routeTree.gen.ts` é gerado — não editar à mão.
-- **Fuso horário SP**: implementado com `new Intl.DateTimeFormat("pt-BR", { timeZone: "America/Sao_Paulo", hour: "2-digit", minute: "2-digit", weekday: "short" })` para evitar bug de fuso no cliente.
-- **SEO**: cada rota mantém seu `head()` próprio com title/description/og distintos.
-- **Sem mudanças de schema** no Supabase nesta etapa (cardápio fica no código conforme você escolheu).
-- **Imports faltantes**: novos arquivos serão criados no mesmo batch dos imports para não quebrar o build estrito do TanStack.
+## 7. Polimento Visual
 
-## Entregáveis ao fim
+- Tipografia: revisar hierarquia (display serif para H1/H2, sans para body, números tabulares para preços).
+- Espaçamentos: padronizar `py-20 md:py-28` entre seções.
+- Mobile: revisar `/cardapio`, `/feedback`, hero — ajustar para 487px de largura observada.
+- Ícones lucide consistentes (peso/tamanho).
+- SEO: revisar meta tags por rota (já parcialmente feito), adicionar JSON-LD `Restaurant` no `__root.tsx` (endereço, horário, telefone).
 
-1. Projeto rodando no preview da Lovable com tudo acima.
-2. `vercel.json` + instruções de deploy (push para GitHub → Import no Vercel → colar 6 env vars → Deploy).
-3. Estrutura de pastas explicada no `README`.
+## 8. Estrutura de Arquivos (resumo)
+
+```text
+src/
+  components/site/
+    FeedbackCard.tsx              (novo)
+    FeedbackForm.tsx              (novo)
+    OfertasRelampago.tsx          (reescrito)
+    OfertaCard.tsx                (novo)
+    CountdownTimer.tsx            (novo)
+    PratoBadge.tsx                (novo)
+    PratosMaisVendidos.tsx        (novo)
+    WhatsAppFloatingButton.tsx    (novo)
+    LoadingScreen.tsx             (novo)
+    Header.tsx                    (refatorado)
+  data/
+    menu.ts                       (badges + novas imagens)
+    ofertas.ts                    (precoAntigo/Novo, imagem, fimEm)
+  routes/
+    __root.tsx                    (JSON-LD, FAB, LoadingScreen, AnimatePresence)
+    index.tsx                     (PratosMaisVendidos, prévia feedbacks)
+    feedback.tsx                  (realtime + AnimatePresence)
+  hooks/
+    use-countdown.ts              (novo)
+supabase/migrations/
+  <timestamp>_enable_realtime_feedbacks.sql
+```
+
+## 9. Detalhes Técnicos
+
+- **Realtime**: usar `supabase.channel(...).on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'feedbacks' }, payload => ...)`.
+- **Countdown**: cálculo baseado em `America/Sao_Paulo` (já temos `src/lib/horario.ts`), atualiza a cada 1000ms via `setInterval` dentro de `useEffect`.
+- **Imagens**: geradas com `imagegen` modelo `standard`, salvas como `.jpg` em `src/assets/menu/`, importadas como ES module no `menu.ts` para Vite bundle.
+- **Tokens**: tudo via `src/styles.css` (`--brand-green-deep`, `--brand-gold`, `--brand-cream`); nenhum hex em componente.
+- **Vercel**: ignorado por enquanto, conforme pedido.
+
+## 10. Fora do Escopo
+
+- Migração/config Vercel.
+- Painel admin para gerenciar ofertas/badges (continua hardcoded em `data/`).
+- Sistema de pedidos no banco (continua via WhatsApp).
+
+Aprovar para eu implementar tudo de uma vez.

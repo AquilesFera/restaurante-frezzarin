@@ -12,6 +12,8 @@ import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { Toaster } from "@/components/ui/sonner";
 import { RestaurantStatusBanner } from "@/components/site/RestaurantStatusBanner";
+import { WhatsAppFloatingButton } from "@/components/site/WhatsAppFloatingButton";
+import { LoadingScreen } from "@/components/site/LoadingScreen";
 
 function NotFoundComponent() {
   return (
@@ -101,6 +103,7 @@ function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   return (
     <QueryClientProvider client={queryClient}>
+      <LoadingScreen />
       <div className="min-h-screen flex flex-col">
         <Header />
         <div className="pt-16">
@@ -110,6 +113,7 @@ function RootComponent() {
           <Outlet />
         </main>
         <Footer />
+        <WhatsAppFloatingButton />
         <Toaster richColors position="top-center" />
       </div>
     </QueryClientProvider>

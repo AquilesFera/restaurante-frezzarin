@@ -5,6 +5,8 @@ import { SectionEyebrow, Ornament } from "@/components/site/SectionEyebrow";
 import { menu } from "@/data/menu";
 import { OfertasRelampago } from "@/components/site/OfertasRelampago";
 import { PratoDoDiaCard } from "@/components/site/PratoDoDiaCard";
+import { PratosMaisVendidos } from "@/components/site/PratosMaisVendidos";
+import { FeedbackPreview } from "@/components/site/FeedbackPreview";
 import interior from "@/assets/interior-ByLBiY_l.jpg";
 
 export const Route = createFileRoute("/")({

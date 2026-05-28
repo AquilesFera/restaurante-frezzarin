@@ -80,6 +80,7 @@ export const menu: Prato[] = [
     proteina: "frango", porte: "media",
     semGluten: true, semLactose: true, lowCarb: true,
     refeicao: ["almoco", "jantar"],
+    maisPedido: true,
   },
   {
     id: "tilapia",
@@ -136,6 +137,7 @@ export const menu: Prato[] = [
     proteina: "carne", porte: "reforcada",
     semGluten: true, semLactose: true, lowCarb: false,
     refeicao: ["almoco", "jantar"],
+    maisPedido: true,
   },
   {
     id: "wrap-integral",
@@ -192,6 +194,7 @@ export const menu: Prato[] = [
     proteina: "vegano", porte: "media",
     semGluten: true, semLactose: true, lowCarb: false,
     refeicao: ["almoco", "jantar"],
+    maisPedido: true,
   },
   {
     id: "suco-detox",
@@ -306,6 +309,7 @@ export const menu: Prato[] = [
     proteina: "peixe", porte: "media",
     semGluten: true, semLactose: true, lowCarb: true,
     refeicao: ["almoco", "jantar"],
+    novo: true,
   },
   {
     id: "patinho-grelhado",
@@ -484,7 +488,7 @@ export const menu: Prato[] = [
     nome: "Suco de Melancia com Limão",
     descricao: "Melancia gelada batida com limão e hortelã. 400ml.",
     preco: "R$ 10,90",
-    imagem: "https://images.unsplash.com/photo-1527102298867-f1bb6c0afdf0?w=800&q=80",
+    imagem: sucoMelancia,
     categoria: "Bebidas",
     tags: ["Natural", "Vegano", "Sem Glúten", "Sem Lactose"],
     ingredientes: ["Melancia", "Limão", "Hortelã"],
@@ -512,7 +516,7 @@ export const menu: Prato[] = [
     nome: "Suco de Acerola",
     descricao: "Polpa de acerola natural, rica em vitamina C. 350ml.",
     preco: "R$ 10,90",
-    imagem: "https://images.unsplash.com/photo-1622597467836-f3285f2131b8?w=800&q=80",
+    imagem: sucoAcerola,
     categoria: "Bebidas",
     tags: ["Natural", "Vegano", "Sem Glúten", "Sem Lactose"],
     ingredientes: ["Polpa de acerola", "Água gelada", "Adoçante natural"],
@@ -526,7 +530,7 @@ export const menu: Prato[] = [
     nome: "Água de Coco Natural",
     descricao: "Água de coco gelada, servida em copo de 400ml.",
     preco: "R$ 8,90",
-    imagem: "https://images.unsplash.com/photo-1536759808600-d3a8e4a7d0d6?w=800&q=80",
+    imagem: aguaCoco,
     categoria: "Bebidas",
     tags: ["Natural", "Vegano", "Sem Glúten", "Sem Lactose"],
     ingredientes: ["Água de coco"],

@@ -1,8 +1,11 @@
 import { motion } from "framer-motion";
-import { Zap } from "lucide-react";
+import { Flame } from "lucide-react";
+import { useMemo } from "react";
 import { useRestaurantStatus } from "@/hooks/use-restaurant-status";
 import { ofertasPorTurno } from "@/data/ofertas";
 import { SectionEyebrow } from "@/components/site/SectionEyebrow";
+import { OfertaCard } from "@/components/site/OfertaCard";
+import { Link } from "@tanstack/react-router";
 
 const tituloPorTurno = {
   manha: "Ofertas da Manhã",
@@ -13,9 +16,15 @@ const tituloPorTurno = {
 export function OfertasRelampago() {
   const { turno, aberto, minutosParaFim } = useRestaurantStatus();
 
+  // Data-alvo (fim do turno) para alimentar o countdown em tempo real
+  const fimEm = useMemo(() => {
+    if (!aberto || turno === "fechado") return null;
+    return new Date(Date.now() + minutosParaFim * 60_000);
+  }, [aberto, turno, minutosParaFim]);
+
   if (!aberto || turno === "fechado") {
     return (
-      <section className="py-16 bg-brand-green-deep text-brand-cream">
+      <section className="py-20 bg-gradient-to-b from-brand-green-deep to-brand-green text-brand-cream">
         <div className="mx-auto max-w-3xl px-6 text-center">
           <SectionEyebrow>Ofertas Relâmpago</SectionEyebrow>
           <h2 className="font-serif text-3xl md:text-4xl mt-2">
@@ -30,44 +39,48 @@ export function OfertasRelampago() {
   }
 
   const ofertas = ofertasPorTurno[turno];
-  const horas = Math.floor(minutosParaFim / 60);
-  const min = minutosParaFim % 60;
 
   return (
-    <section className="py-20 bg-gradient-to-b from-brand-green-deep to-brand-green text-brand-cream">
-      <div className="mx-auto max-w-7xl px-6">
+    <section className="relative py-20 md:py-28 overflow-hidden bg-gradient-to-b from-brand-green-deep via-brand-green-deep to-brand-green text-brand-cream">
+      {/* decoração */}
+      <div className="absolute inset-0 opacity-[0.06] pointer-events-none" aria-hidden>
+        <div className="absolute top-10 -left-20 h-80 w-80 rounded-full bg-brand-gold blur-3xl" />
+        <div className="absolute bottom-10 -right-20 h-80 w-80 rounded-full bg-brand-gold blur-3xl" />
+      </div>
+
+      <div className="relative mx-auto max-w-7xl px-6">
         <div className="text-center max-w-2xl mx-auto">
-          <SectionEyebrow>Ofertas Relâmpago</SectionEyebrow>
-          <h2 className="font-serif text-4xl md:text-5xl mt-2">
+          <motion.span
+            animate={{ scale: [1, 1.08, 1] }}
+            transition={{ duration: 1.8, repeat: Infinity }}
+            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-brand-gold/15 border border-brand-gold/40 text-brand-gold text-[11px] tracking-[0.3em] uppercase font-semibold"
+          >
+            <Flame className="h-3.5 w-3.5" /> Promoção ativa
+          </motion.span>
+          <h2 className="mt-4 font-serif text-4xl md:text-5xl">
             {tituloPorTurno[turno].split(" ")[0]}{" "}
             <span className="italic-gold">
               {tituloPorTurno[turno].split(" ").slice(1).join(" ")}
             </span>
           </h2>
-          <p className="mt-4 inline-flex items-center gap-2 text-sm text-brand-gold">
-            <Zap className="h-4 w-4" /> Termina em {horas > 0 ? `${horas}h ` : ""}
-            {min}min
+          <p className="mt-3 text-brand-cream/80 text-sm">
+            Aproveite enquanto durar. Ofertas mudam a cada turno do dia.
           </p>
         </div>
 
-        <div className="mt-12 grid sm:grid-cols-2 gap-6">
+        <div className="mt-12 grid md:grid-cols-2 gap-6 lg:gap-8">
           {ofertas.map((o, i) => (
-            <motion.div
-              key={o.id}
-              initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.45, delay: i * 0.08 }}
-              className="relative rounded-2xl bg-brand-cream text-brand-green-deep p-6 border border-brand-gold/30 overflow-hidden"
-            >
-              <span className="absolute top-4 right-4 text-[10px] tracking-widest uppercase bg-brand-gold text-brand-green-deep px-2.5 py-1 rounded-full font-semibold">
-                {o.badge}
-              </span>
-              <Zap className="h-5 w-5 text-brand-gold" />
-              <h3 className="mt-3 font-serif text-2xl">{o.titulo}</h3>
-              <p className="mt-2 text-sm text-muted-foreground">{o.descricao}</p>
-            </motion.div>
+            <OfertaCard key={o.id} oferta={o} fimEm={fimEm} index={i} />
           ))}
+        </div>
+
+        <div className="mt-12 text-center">
+          <Link
+            to="/cardapio"
+            className="inline-flex items-center gap-2 px-7 py-3 rounded-full border border-brand-gold/50 text-brand-gold text-xs font-semibold tracking-[0.22em] uppercase hover:bg-brand-gold hover:text-brand-green-deep transition-colors"
+          >
+            Ver cardápio completo
+          </Link>
         </div>
       </div>
     </section>

@@ -14,6 +14,14 @@ import sucoVerde from "@/assets/menu/suco-verde.jpg";
 import limonadaGengibre from "@/assets/menu/limonada-gengibre.jpg";
 import sucoMaracuja from "@/assets/menu/suco-maracuja.jpg";
 import sucoAbacaxiHortela from "@/assets/menu/suco-abacaxi-hortela.jpg";
+// Imagens novas geradas (substituem URLs externas)
+import patinhoGrelhado from "@/assets/menu/patinho-grelhado.jpg";
+import feijaoPreto from "@/assets/menu/feijao-preto.jpg";
+import panquecaFrango from "@/assets/menu/panqueca-frango.jpg";
+import escondidinho from "@/assets/menu/escondidinho.jpg";
+import sucoMelancia from "@/assets/menu/suco-melancia.jpg";
+import sucoAcerola from "@/assets/menu/suco-acerola.jpg";
+import aguaCoco from "@/assets/menu/agua-coco.jpg";
 
 export type Categoria = "Fit por Quilo" | "Marmitas" | "Congelados" | "Bebidas";
 export type Tag = "Vegano" | "Fit" | "Low Carb" | "Sem Glúten" | "Sem Lactose" | "Natural";
@@ -40,6 +48,8 @@ export interface Prato {
   semLactose: boolean;
   lowCarb: boolean;
   refeicao: Refeicao[];
+  maisPedido?: boolean;
+  novo?: boolean;
 }
 
 export const menu: Prato[] = [
@@ -70,6 +80,7 @@ export const menu: Prato[] = [
     proteina: "frango", porte: "media",
     semGluten: true, semLactose: true, lowCarb: true,
     refeicao: ["almoco", "jantar"],
+    maisPedido: true,
   },
   {
     id: "tilapia",
@@ -126,6 +137,7 @@ export const menu: Prato[] = [
     proteina: "carne", porte: "reforcada",
     semGluten: true, semLactose: true, lowCarb: false,
     refeicao: ["almoco", "jantar"],
+    maisPedido: true,
   },
   {
     id: "wrap-integral",
@@ -182,6 +194,7 @@ export const menu: Prato[] = [
     proteina: "vegano", porte: "media",
     semGluten: true, semLactose: true, lowCarb: false,
     refeicao: ["almoco", "jantar"],
+    maisPedido: true,
   },
   {
     id: "suco-detox",
@@ -296,13 +309,14 @@ export const menu: Prato[] = [
     proteina: "peixe", porte: "media",
     semGluten: true, semLactose: true, lowCarb: true,
     refeicao: ["almoco", "jantar"],
+    novo: true,
   },
   {
     id: "patinho-grelhado",
     nome: "Patinho Grelhado",
     descricao: "Bifes de patinho magro grelhados na chapa, com alho dourado e ervas.",
     preco: "R$ 46,00",
-    imagem: "https://images.unsplash.com/photo-1558030006-450675393462?w=800&q=80",
+    imagem: patinhoGrelhado,
     categoria: "Fit por Quilo",
     tags: ["Fit", "Low Carb", "Sem Glúten", "Sem Lactose"],
     ingredientes: ["Patinho bovino", "Alho", "Azeite", "Sal marinho", "Pimenta do reino"],
@@ -310,6 +324,7 @@ export const menu: Prato[] = [
     proteina: "carne", porte: "media",
     semGluten: true, semLactose: true, lowCarb: true,
     refeicao: ["almoco", "jantar"],
+    maisPedido: true,
   },
   {
     id: "arroz-integral",
@@ -330,7 +345,7 @@ export const menu: Prato[] = [
     nome: "Feijão Preto Caseiro",
     descricao: "Feijão preto cozido lentamente com tempero da casa.",
     preco: "R$ 12,00",
-    imagem: "https://images.unsplash.com/photo-1604908554007-1f897cc12a07?w=800&q=80",
+    imagem: feijaoPreto,
     categoria: "Fit por Quilo",
     tags: ["Vegano", "Sem Glúten", "Sem Lactose"],
     ingredientes: ["Feijão preto", "Cebola", "Alho", "Louro", "Azeite"],
@@ -408,13 +423,14 @@ export const menu: Prato[] = [
     proteina: "carne", porte: "media",
     semGluten: true, semLactose: false, lowCarb: true,
     refeicao: ["almoco", "jantar"],
+    novo: true,
   },
   {
     id: "panqueca-frango",
     nome: "Panqueca de Frango",
     descricao: "Massa fininha recheada com frango desfiado ao molho rosé.",
     preco: "R$ 26,90",
-    imagem: "https://images.unsplash.com/photo-1565895405138-6c3a1555da6a?w=800&q=80",
+    imagem: panquecaFrango,
     categoria: "Congelados",
     tags: ["Fit"],
     ingredientes: ["Farinha integral", "Ovos", "Leite desnatado", "Frango desfiado", "Molho rosé"],
@@ -428,7 +444,7 @@ export const menu: Prato[] = [
     nome: "Escondidinho de Batata Doce",
     descricao: "Purê de batata doce com carne moída magra e queijo light gratinado.",
     preco: "R$ 31,90",
-    imagem: "https://images.unsplash.com/photo-1572441713132-c542fc4fe282?w=800&q=80",
+    imagem: escondidinho,
     categoria: "Congelados",
     tags: ["Fit", "Sem Glúten"],
     ingredientes: ["Batata doce", "Patinho moído", "Cebola", "Queijo light", "Salsinha"],
@@ -472,7 +488,7 @@ export const menu: Prato[] = [
     nome: "Suco de Melancia com Limão",
     descricao: "Melancia gelada batida com limão e hortelã. 400ml.",
     preco: "R$ 10,90",
-    imagem: "https://images.unsplash.com/photo-1527102298867-f1bb6c0afdf0?w=800&q=80",
+    imagem: sucoMelancia,
     categoria: "Bebidas",
     tags: ["Natural", "Vegano", "Sem Glúten", "Sem Lactose"],
     ingredientes: ["Melancia", "Limão", "Hortelã"],
@@ -500,7 +516,7 @@ export const menu: Prato[] = [
     nome: "Suco de Acerola",
     descricao: "Polpa de acerola natural, rica em vitamina C. 350ml.",
     preco: "R$ 10,90",
-    imagem: "https://images.unsplash.com/photo-1622597467836-f3285f2131b8?w=800&q=80",
+    imagem: sucoAcerola,
     categoria: "Bebidas",
     tags: ["Natural", "Vegano", "Sem Glúten", "Sem Lactose"],
     ingredientes: ["Polpa de acerola", "Água gelada", "Adoçante natural"],
@@ -514,7 +530,7 @@ export const menu: Prato[] = [
     nome: "Água de Coco Natural",
     descricao: "Água de coco gelada, servida em copo de 400ml.",
     preco: "R$ 8,90",
-    imagem: "https://images.unsplash.com/photo-1536759808600-d3a8e4a7d0d6?w=800&q=80",
+    imagem: aguaCoco,
     categoria: "Bebidas",
     tags: ["Natural", "Vegano", "Sem Glúten", "Sem Lactose"],
     ingredientes: ["Água de coco"],

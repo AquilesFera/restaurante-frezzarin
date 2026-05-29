@@ -81,13 +81,17 @@ function FeedbackPage() {
 
     setSending(true);
     try {
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from("feedbacks")
-        .insert({ nome: n, comentario: c, nota });
+        .insert({ nome: n, comentario: c, nota })
+        .select("id, nome, comentario, nota, created_at")
+        .single();
       if (error) throw error;
       toast.success("Obrigado pelo seu feedback!");
       setNome(""); setComentario(""); setNota(null);
-      // Realtime adicionará automaticamente; sem reload necessário.
+      if (data) {
+        setItems((prev) => (prev.some((p) => p.id === data.id) ? prev : [data as FeedbackRow, ...prev]));
+      }
     } catch (err) {
       console.error("[feedback] submit", err);
       toast.error("Não foi possível enviar. Tente novamente.");

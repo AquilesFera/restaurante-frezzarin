@@ -13,21 +13,27 @@ interface FeedbackRow {
   created_at: string;
 }
 
+const feedbackDb = supabase as any;
+
 export function FeedbackPreview() {
   const [items, setItems] = useState<FeedbackRow[]>([]);
 
   useEffect(() => {
     let cancelled = false;
     (async () => {
-      const { data } = await supabase
+      const { data, error } = await feedbackDb
         .from("feedbacks")
         .select("id, nome, comentario, nota, created_at")
         .order("created_at", { ascending: false })
         .limit(3);
+      if (error) {
+        console.error("[feedback-preview] load", error);
+        return;
+      }
       if (!cancelled && data) setItems(data as FeedbackRow[]);
     })();
 
-    const channel = supabase
+    const channel = feedbackDb
       .channel("feedbacks-preview")
       .on(
         "postgres_changes",
@@ -41,7 +47,7 @@ export function FeedbackPreview() {
 
     return () => {
       cancelled = true;
-      supabase.removeChannel(channel);
+      feedbackDb.removeChannel(channel);
     };
   }, []);
 

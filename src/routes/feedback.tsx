@@ -28,6 +28,8 @@ interface FeedbackRow {
   created_at: string;
 }
 
+const feedbackDb = supabase as any;
+
 function FeedbackPage() {
   const [items, setItems] = useState<FeedbackRow[]>([]);
   const [loading, setLoading] = useState(true);
@@ -38,7 +40,7 @@ function FeedbackPage() {
 
   async function carregar() {
     try {
-      const { data, error } = await supabase
+      const { data, error } = await feedbackDb
         .from("feedbacks")
         .select("id, nome, comentario, nota, created_at")
         .order("created_at", { ascending: false })
@@ -54,19 +56,19 @@ function FeedbackPage() {
 
   useEffect(() => {
     carregar();
-    const channel = supabase
+    const channel = feedbackDb
       .channel("feedbacks-page")
       .on(
         "postgres_changes",
         { event: "INSERT", schema: "public", table: "feedbacks" },
-        (payload) => {
+        (payload: { new: FeedbackRow }) => {
           const row = payload.new as FeedbackRow;
           setItems((prev) => (prev.some((p) => p.id === row.id) ? prev : [row, ...prev]));
         },
       )
       .subscribe();
     return () => {
-      supabase.removeChannel(channel);
+      feedbackDb.removeChannel(channel);
     };
   }, []);
 
@@ -81,11 +83,11 @@ function FeedbackPage() {
 
     setSending(true);
     try {
-      const { data, error } = await supabase
+      const { data, error } = await feedbackDb
         .from("feedbacks")
         .insert({ nome: n, comentario: c, nota })
         .select("id, nome, comentario, nota, created_at")
-        .single();
+        .maybeSingle();
       if (error) throw error;
       toast.success("Obrigado pelo seu feedback!");
       setNome(""); setComentario(""); setNota(null);

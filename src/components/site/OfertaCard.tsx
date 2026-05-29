@@ -71,7 +71,12 @@ export function OfertaCard({ oferta, fimEm, index = 0 }: Props) {
           </div>
 
           <div className="mt-5">
-            <AddToCartButton prato={prato} className="w-full justify-center py-2.5" />
+            <AddToCartButton
+              prato={prato}
+              precoOverride={oferta.precoNovo}
+              ofertaLabel={oferta.titulo}
+              className="w-full justify-center py-2.5"
+            />
           </div>
         </div>
       </div>

@@ -1,6 +1,8 @@
 import { Link } from "@tanstack/react-router";
 import { Leaf, Instagram, MapPin, Clock, Mail } from "lucide-react";
 
+const currentYear = 2026;
+
 export function Footer() {
   return (
     <footer className="bg-brand-green-deep text-brand-cream/85 mt-24">
@@ -52,7 +54,7 @@ export function Footer() {
       </div>
       <div className="border-t border-white/10">
         <div className="mx-auto max-w-7xl px-6 lg:px-10 py-6 text-xs text-brand-cream/60 flex flex-wrap justify-between gap-3">
-          <span>© {new Date().getFullYear()} Restaurante Frezzarin. Todos os direitos reservados.</span>
+          <span>© {currentYear} Restaurante Frezzarin. Todos os direitos reservados.</span>
           <span>Vila Frezzarin · Americana–SP · CNPJ 00.000.000/0001-00</span>
         </div>
       </div>

@@ -87,7 +87,7 @@ function FeedbackPage() {
       if (error) throw error;
       toast.success("Obrigado pelo seu feedback!");
       setNome(""); setComentario(""); setNota(null);
-      await carregar();
+      // Realtime adicionará automaticamente; sem reload necessário.
     } catch (err) {
       console.error("[feedback] submit", err);
       toast.error("Não foi possível enviar. Tente novamente.");
@@ -147,39 +147,51 @@ function FeedbackPage() {
               <MessageSquareQuote className="h-5 w-5 text-brand-gold" />
             </div>
 
-            {!loading && items.length === 0 ? (
+            {loading ? (
+              <div className="space-y-4">
+                {Array.from({ length: 3 }).map((_, i) => (
+                  <Skeleton key={i} className="h-32 w-full rounded-2xl" />
+                ))}
+              </div>
+            ) : items.length === 0 ? (
               <div className="bg-white rounded-2xl p-10 border border-dashed border-border text-center text-muted-foreground">
                 Ainda não há avaliações. Seja o primeiro a comentar!
               </div>
             ) : (
               <div className="space-y-4">
-                {items.map((f, i) => (
-                  <motion.article
-                    key={f.id}
-                    initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: Math.min(i, 6) * 0.04 }}
-                    className="bg-white rounded-2xl p-6 border border-border hover:shadow-md transition-shadow"
-                  >
-                    <div className="flex items-start justify-between gap-4">
-                      <div className="flex items-center gap-3">
-                        <div className="h-10 w-10 rounded-full bg-brand-green-deep text-brand-cream flex items-center justify-center font-serif italic text-sm">
-                          {initials(f.nome)}
+                <AnimatePresence initial={false}>
+                  {items.map((f) => (
+                    <motion.article
+                      key={f.id}
+                      layout
+                      initial={{ opacity: 0, y: -14, scale: 0.97 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.97 }}
+                      transition={{ duration: 0.35 }}
+                      className="bg-white rounded-2xl p-6 border border-border hover:shadow-md transition-shadow"
+                    >
+                      <div className="flex items-start justify-between gap-4">
+                        <div className="flex items-center gap-3">
+                          <div className="h-10 w-10 rounded-full bg-brand-green-deep text-brand-cream flex items-center justify-center font-serif italic text-sm">
+                            {initials(f.nome)}
+                          </div>
+                          <div>
+                            <div className="font-medium text-brand-green-deep">{f.nome}</div>
+                            <div className="text-xs text-muted-foreground">{formatDate(f.created_at)}</div>
+                          </div>
                         </div>
-                        <div>
-                          <div className="font-medium text-brand-green-deep">{f.nome}</div>
-                          <div className="text-xs text-muted-foreground">{formatDate(f.created_at)}</div>
-                        </div>
+                        {f.nota != null && (
+                          <div className="flex gap-0.5">
+                            {Array.from({ length: 5 }).map((_, k) => (
+                              <Star key={k} className={`h-4 w-4 ${k < f.nota! ? "fill-brand-gold text-brand-gold" : "text-muted-foreground/30"}`} />
+                            ))}
+                          </div>
+                        )}
                       </div>
-                      {f.nota != null && (
-                        <div className="flex gap-0.5">
-                          {Array.from({ length: 5 }).map((_, k) => (
-                            <Star key={k} className={`h-4 w-4 ${k < f.nota! ? "fill-brand-gold text-brand-gold" : "text-muted-foreground/30"}`} />
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                    <p className="mt-4 text-foreground/90 leading-relaxed text-sm whitespace-pre-line">{f.comentario}</p>
-                  </motion.article>
-                ))}
+                      <p className="mt-4 text-foreground/90 leading-relaxed text-sm whitespace-pre-line">{f.comentario}</p>
+                    </motion.article>
+                  ))}
+                </AnimatePresence>
               </div>
             )}
           </div>

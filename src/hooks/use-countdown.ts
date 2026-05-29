@@ -13,7 +13,7 @@ export function useCountdown(target: Date | null): {
     if (!target) return 0;
     return Math.max(0, Math.floor((target.getTime() - Date.now()) / 1000));
   };
-  const [total, setTotal] = useState<number>(calc);
+  const [total, setTotal] = useState<number>(0);
 
   useEffect(() => {
     setTotal(calc());

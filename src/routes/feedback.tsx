@@ -1,9 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Star, MessageSquareQuote } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export const Route = createFileRoute("/feedback")({
   component: FeedbackPage,
@@ -53,6 +54,20 @@ function FeedbackPage() {
 
   useEffect(() => {
     carregar();
+    const channel = supabase
+      .channel("feedbacks-page")
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "feedbacks" },
+        (payload) => {
+          const row = payload.new as FeedbackRow;
+          setItems((prev) => (prev.some((p) => p.id === row.id) ? prev : [row, ...prev]));
+        },
+      )
+      .subscribe();
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   async function handleSubmit(e: React.FormEvent) {

@@ -7,9 +7,11 @@ import type { Prato } from "@/data/menu";
 interface Props {
   prato: Prato;
   className?: string;
+  precoOverride?: string;
+  ofertaLabel?: string;
 }
 
-export function AddToCartButton({ prato, className = "" }: Props) {
+export function AddToCartButton({ prato, className = "", precoOverride, ofertaLabel }: Props) {
   const add = useCart((s) => s.add);
   const { aberto } = useRestaurantStatus();
 
@@ -21,8 +23,13 @@ export function AddToCartButton({ prato, className = "" }: Props) {
       });
       return;
     }
-    add({ id: prato.id, nome: prato.nome, preco: prato.preco, imagem: prato.imagem });
-    toast.success(`${prato.nome} adicionado ao pedido`);
+    add({
+      id: ofertaLabel ? `${prato.id}:${ofertaLabel}` : prato.id,
+      nome: ofertaLabel ? `${prato.nome} — ${ofertaLabel}` : prato.nome,
+      preco: precoOverride ?? prato.preco,
+      imagem: prato.imagem,
+    });
+    toast.success(`${prato.nome} adicionado ao pedido${ofertaLabel ? " com promoção" : ""}`);
   };
 
   return (

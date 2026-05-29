@@ -23,7 +23,14 @@ export function useRestaurantStatus(): RestaurantStatus {
       diaSemana: weekday,
     };
   };
-  const [status, setStatus] = useState<RestaurantStatus>(compute);
+  const [status, setStatus] = useState<RestaurantStatus>({
+    aberto: true,
+    turno: "manha",
+    minutosParaFim: 0,
+    hora: 10,
+    minuto: 30,
+    diaSemana: 1,
+  });
   useEffect(() => {
     setStatus(compute());
     const id = setInterval(() => setStatus(compute()), 30_000);

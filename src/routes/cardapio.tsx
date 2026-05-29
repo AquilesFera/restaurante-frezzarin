@@ -162,7 +162,7 @@ function CardapioPage() {
                             ) : (
                               <span className="font-semibold text-brand-green-deep">{p.preco}</span>
                             )}
-                            <AddToCartButton prato={p} />
+                            <AddToCartButton prato={p} precoOverride={oferta?.precoNovo} ofertaLabel={oferta?.titulo} />
                           </div>
                           <button
                             type="button"

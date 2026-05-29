@@ -4,12 +4,14 @@ import { menu, type Prato } from "@/data/menu";
 import { pratoDoDiaPorDia, nomesDiasSemana } from "@/data/prato-do-dia";
 import { useRestaurantStatus } from "@/hooks/use-restaurant-status";
 import { AddToCartButton } from "@/components/site/AddToCartButton";
+import { ofertaParaPrato } from "@/data/ofertas";
 
 export function PratoDoDiaCard() {
-  const { diaSemana } = useRestaurantStatus();
+  const { diaSemana, turno } = useRestaurantStatus();
   const id = pratoDoDiaPorDia[diaSemana];
   const prato: Prato | undefined = menu.find((p) => p.id === id);
   if (!prato) return null;
+  const oferta = ofertaParaPrato(turno, prato.id);
 
   return (
     <motion.div
@@ -33,9 +35,16 @@ export function PratoDoDiaCard() {
           </span>
           <h3 className="mt-4 font-serif text-3xl md:text-4xl">{prato.nome}</h3>
           <p className="mt-3 text-brand-cream/85">{prato.descricao}</p>
-          <div className="mt-6 flex items-center gap-4">
-            <span className="font-serif text-3xl italic-gold">{prato.preco}</span>
-            <AddToCartButton prato={prato} />
+          <div className="mt-6 flex flex-wrap items-center gap-4">
+            {oferta ? (
+              <div className="leading-tight">
+                <div className="text-sm text-brand-cream/60 line-through">{oferta.precoAntigo}</div>
+                <div className="font-serif text-3xl italic-gold">{oferta.precoNovo}</div>
+              </div>
+            ) : (
+              <span className="font-serif text-3xl italic-gold">{prato.preco}</span>
+            )}
+            <AddToCartButton prato={prato} precoOverride={oferta?.precoNovo} ofertaLabel={oferta?.titulo} />
           </div>
         </div>
       </div>

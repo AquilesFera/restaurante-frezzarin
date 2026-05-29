@@ -7,6 +7,8 @@ import { MenuQuiz } from "@/components/site/MenuQuiz";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { AddToCartButton } from "@/components/site/AddToCartButton";
 import { PratoDoDiaCard } from "@/components/site/PratoDoDiaCard";
+import { PratoBadge } from "@/components/site/PratoBadge";
+import { ofertaParaPrato } from "@/data/ofertas";
 import { useRestaurantStatus } from "@/hooks/use-restaurant-status";
 
 export const Route = createFileRoute("/cardapio")({
@@ -109,7 +111,9 @@ function CardapioPage() {
                     transition={{ duration: 0.3 }}
                     className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6"
                   >
-                    {filtrados.map((p, i) => (
+                    {filtrados.map((p, i) => {
+                      const oferta = ofertaParaPrato(turno, p.id);
+                      return (
                       <motion.div
                         key={p.id}
                         initial={{ opacity: 0, y: 16 }}
@@ -130,7 +134,12 @@ function CardapioPage() {
                             height={768}
                             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                           />
-                          <div className="absolute top-3 left-3 flex gap-1.5 flex-wrap">
+                          <div className="absolute top-3 left-3 flex flex-col gap-1.5 items-start">
+                            {oferta && <PratoBadge kind="promocao" />}
+                            {p.maisPedido && <PratoBadge kind="mais-pedido" />}
+                            {p.novo && <PratoBadge kind="novo" />}
+                          </div>
+                          <div className="absolute bottom-3 left-3 flex gap-1.5 flex-wrap">
                             {p.tags.slice(0, 2).map((t) => (
                               <span
                                 key={t}
@@ -145,7 +154,14 @@ function CardapioPage() {
                           <h3 className="font-serif text-xl text-brand-green-deep">{p.nome}</h3>
                           <p className="mt-2 text-sm text-muted-foreground line-clamp-2 flex-1">{p.descricao}</p>
                           <div className="mt-4 flex items-center justify-between gap-3">
-                            <span className="font-semibold text-brand-green-deep">{p.preco}</span>
+                            {oferta ? (
+                              <div className="flex flex-col leading-tight">
+                                <span className="text-[11px] line-through text-muted-foreground">{oferta.precoAntigo}</span>
+                                <span className="font-semibold italic-gold">{oferta.precoNovo}</span>
+                              </div>
+                            ) : (
+                              <span className="font-semibold text-brand-green-deep">{p.preco}</span>
+                            )}
                             <AddToCartButton prato={p} />
                           </div>
                           <button
@@ -157,7 +173,8 @@ function CardapioPage() {
                           </button>
                         </div>
                       </motion.div>
-                    ))}
+                      );
+                    })}
                   </motion.div>
                 </AnimatePresence>
 

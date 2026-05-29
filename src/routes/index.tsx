@@ -163,6 +163,9 @@ function Index() {
           </div>
         </div>
       </section>
+
+      <PratosMaisVendidos />
+      <FeedbackPreview />
     </>
   );
 }

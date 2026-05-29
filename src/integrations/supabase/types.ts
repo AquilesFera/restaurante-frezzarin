@@ -14,30 +14,7 @@ export type Database = {
   }
   public: {
     Tables: {
-      feedbacks: {
-        Row: {
-          comentario: string
-          created_at: string
-          id: string
-          nome: string
-          nota: number | null
-        }
-        Insert: {
-          comentario: string
-          created_at?: string
-          id?: string
-          nome: string
-          nota?: number | null
-        }
-        Update: {
-          comentario?: string
-          created_at?: string
-          id?: string
-          nome?: string
-          nota?: number | null
-        }
-        Relationships: []
-      }
+      [_ in never]: never
     }
     Views: {
       [_ in never]: never

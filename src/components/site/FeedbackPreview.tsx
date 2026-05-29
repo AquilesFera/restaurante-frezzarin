@@ -38,7 +38,7 @@ export function FeedbackPreview() {
       .on(
         "postgres_changes",
         { event: "INSERT", schema: "public", table: "feedbacks" },
-        (payload) => {
+        (payload: { new: FeedbackRow }) => {
           const row = payload.new as FeedbackRow;
           setItems((prev) => [row, ...prev].slice(0, 3));
         },
